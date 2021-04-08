@@ -72,12 +72,12 @@ const tableAbuseOption = [
         created_at: {
             allowNull: false,
             type: Sequelize.DATE,
-            defaultValue: Sequelize.fn('NOW'),
+            defaultValue: Sequelize.NOW,
         },
         updated_at: {
             allowNull: false,
             type: Sequelize.DATE,
-            defaultValue: Sequelize.fn('NOW'),
+            defaultValue: Sequelize.NOW,
         },
     },
     {
@@ -116,7 +116,7 @@ class SequelizeStore extends Store {
     }
 
     async _increment(table, where, nb = 1, field) {
-        return table.update({ [field]: global.sequelize.literal(`${field} + ${nb}`) }, { where });
+        return table.update({ [field]: this.sequelize.literal(`${field} + ${nb}`) }, { where });
     }
 
     // remove all if time is passed
@@ -124,7 +124,7 @@ class SequelizeStore extends Store {
         const now = new Date();
         await table.destroy({
             where: {
-                date_end: { $lte: now.getTime() },
+                date_end: { [Sequelize.Op.lte]: now.getTime() },
             },
         });
     }
